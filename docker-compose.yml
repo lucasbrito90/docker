@@ -1,0 +1,55 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=sail
+      - POSTGRES_DB=laravel
+    networks:
+        - auth_sail
+  mysql:
+    image: mysql/mysql-server:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=factorydb
+      - MYSQL_USER=sail
+      - MYSQL_PASSWORD=password
+      - MYSQL_ALLOW_EMPTY_PASSWORD=1
+    volumes:
+      - mysql:/var/lib/mysql
+    networks:
+      - auth_sail
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+    networks:
+      - auth_sail
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - auth_sail
+
+volumes:
+    postgres:
+        driver: local
+    redis:
+        driver: local
+    mysql:
+        driver: local
+networks:
+    auth_sail:
+        external: true
